@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Directory from './DirectoryComponent';
-import { CAMPSITES } from './shared/campsites';
+import { CAMPSITES } from '../shared/campsites';
 
 class Main extends Component {
      constructor(props) {
