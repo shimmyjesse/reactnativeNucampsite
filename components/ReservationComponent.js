@@ -28,14 +28,15 @@ class Reservation extends Component {
         console.log(JSON.stringify(this.state));
         this.toggleModal();
     }
-        resetForm() {
-            this.setState({
-                campers: 1,
-                hikeIn: false,
-                date: '',
-                showModal: false
-            });
-        }
+    
+    resetForm() {
+        this.setState({
+            campers: 1,
+            hikeIn: false,
+            date: '',
+            showModal: false
+        });
+    }
 
     render() {
         return (
