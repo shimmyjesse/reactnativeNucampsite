@@ -1,4 +1,4 @@
-export const baseUrl = 'http://192.168.1.65:3001/';
+export const baseUrl = 'http://192.168.1.166:3001/';
 
 // if you're experiencing issues communicating with the server, perhaps due to disconnecting and reconnecting
 // to your current network, or you've connected to a different network, this may cause this url to change.
