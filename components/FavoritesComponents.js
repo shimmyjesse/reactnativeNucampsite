@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, View, Text } from 'react-native';
+import { FlatList, View, Text, Alert, ScrollView } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { Loading } from './LoadingComponent';
@@ -27,17 +27,34 @@ class Favorites extends Component {
 
     render() {
         const { navigate } = this.props.navigation;
-// for some reason, when swiping, "Delete" button shows up, but the favorited campsite does NOT move like in video(?)
+// for some reason, when swiping, "Delete" button shows up, but the favored campsite does NOT move like in video(?)
         const renderFavoriteItem = ({item}) => {
             const rightButton = [
                 {
                     text: 'Delete',
                     type: 'delete',
-                    onPress: () => this.props.deleteFavorite(item.id)
+                    onPress: () => {
+                        Alert.alert(
+                            'Delete Favorite?',
+                            'Are you sure you wish to delete the favored campsite, ' + item.name + '?',
+                            [
+                                {
+                                    text: 'Cancel',
+                                    onPress: () => console.log(item.name + 'Not Deleted'),
+                                    style: 'cancel'
+                                },
+                                {
+                                    text: 'Be Gone!',
+                                    onPress: () => this.props.deleteFavorite(item.id)
+                                }
+                            ],
+                            { cancelable: false }
+                        )
+                    }
                 }
             ];
             return (
-                <Swipeout right={rightButton} autoClose={true}>
+                <Swipeout right={rightButton} autoClose='true'>
                     <ListItem
                         title={item.name}
                         subtitle={item.description}
