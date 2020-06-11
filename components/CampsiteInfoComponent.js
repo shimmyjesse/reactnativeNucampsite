@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, ScrollView, FlatList, Modal, Button, StyleSheet, PanResponder, Alert } from 'react-native';
+import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, PanResponder, Alert } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorite, postComment } from '../redux/ActionCreators';
 
+//NOTE: Any React components that are defined as class components, which Animatable.View is, will allow us to set a 'Ref' prop on it.
 
 
 
@@ -13,6 +14,9 @@ import { postFavorite, postComment } from '../redux/ActionCreators';
 function RenderCampsite(props) {   
 
     const {campsite} = props;
+
+    // A reference to the the animation on the animatable component.
+    const view = React.createRef();
 
     // dx - think of as the differential(d), or distance(d) of a gesture across the X, (x), axis.
     const recognizeDrag = ({dx}) => (dx < -200) ? true : false;
@@ -24,6 +28,10 @@ function RenderCampsite(props) {
         // These parameters will hold values that are automatically passed into this event handler.
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
+        onPanResponderGrant: () => {
+            view.current.rubberBand(1000)
+            .then(endState => console.log(endState.finished ? 'finished' : 'canceled'));
+        },
         onPanResponderEnd: (e, gestureState) => {
             console.log('pan responder end', gestureState);
             if (recognizeDrag(gestureState)) {
@@ -55,6 +63,7 @@ function RenderCampsite(props) {
                 animation='fadeInDown' 
                 duration={2000} 
                 delay={1000}
+                ref={view}
                 {...panResponder.panHandlers}>
                 <Card
                     featuredTitle={campsite.name}
