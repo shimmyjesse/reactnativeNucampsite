@@ -2,13 +2,23 @@ import React from 'react';
 import Main from './components/MainComponent';
 import { Provider } from 'react-redux';
 import { ConfigureStore } from './redux/configureStore';
+import { PersistGate } from 'redux-persist/es/integration/react';
+import Loading from './components/LoadingComponent';
 
-const store = ConfigureStore();
+const { persistor, store } = ConfigureStore();
 
 export default function App() {
   return (
     <Provider store={store}>
-      <Main />
+      <PersistGate
+        loading={<Loading />}
+        persistor={persistor}>
+        <Main />
+      </PersistGate>
     </Provider>
   );
 }
+
+// We wrapped the <Main /> component with the <PersistGate> component prevents the app from rendering
+// until the redux store has rehydrated fully from the client-side storage. Introducing PersistGate from 
+// redux-persist helps to integrate redux-persist with React and React Native apps. 
