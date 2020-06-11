@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, ScrollView, FlatList, Modal, Button, StyleSheet } from 'react-native';
+import { Text, TextInput, View, ScrollView, FlatList, Modal, Button, StyleSheet, PanResponder, Alert } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -14,9 +14,48 @@ function RenderCampsite(props) {
 
     const {campsite} = props;
 
+    // dx - think of as the differential(d), or distance(d) of a gesture across the X, (x), axis.
+    const recognizeDrag = ({dx}) => (dx < -200) ? true : false;
+
+    // This is our PAN RESPONDER.
+    // Which will hold a couple of "Pan" event handlers that's associated with the Pan Responder API.
+        // first parameter of onPanResponderEnd is a native event object: e stands for event. Not using outside of this. Its only
+        // use here is to be able to use the 2nd parameter, 'gestureState'; therefore, 'e' is just an invisible placeholder.
+        // These parameters will hold values that are automatically passed into this event handler.
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderEnd: (e, gestureState) => {
+            console.log('pan responder end', gestureState);
+            if (recognizeDrag(gestureState)) {
+                Alert.alert(
+                    'Add favorite',
+                    'Are you sure you wish to add ' + campsite.name + ' to favorites?',
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                            onPress: () => console.log('Cancel Pressed')
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => props.favorite ?
+                                console.log('Already set as a favorite') : props.markFavorite()
+                        }
+                    ],
+                    { cancelable: false }
+                );
+            }
+            return true;
+        }
+    });
+
     if (campsite) {
         return (
-            <Animatable.View animation='fadeInDown' duration={2000} delay={1000}>
+            <Animatable.View 
+                animation='fadeInDown' 
+                duration={2000} 
+                delay={1000}
+                {...panResponder.panHandlers}>
                 <Card
                     featuredTitle={campsite.name}
                     image={{uri: baseUrl + campsite.image}}>
