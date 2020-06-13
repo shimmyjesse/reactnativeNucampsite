@@ -19,7 +19,9 @@ function RenderCampsite(props) {
     const view = React.createRef();
 
     // dx - think of as the differential(d), or distance(d) of a gesture across the X, (x), axis.
-    const recognizeDrag = ({dx}) => (dx < -200) ? true : false;
+    const recognizeDrag = ({dx}) => (dx < -200) ? true : false; // this is redundant. instead: ({dx}) => dx < -200;
+
+    const recognizeComment = ({dx}) => (dx > 200);
 
     // This is our PAN RESPONDER.
     // Which will hold a couple of "Pan" event handlers that's associated with the Pan Responder API.
@@ -52,6 +54,8 @@ function RenderCampsite(props) {
                     ],
                     { cancelable: false }
                 );
+            } else if (recognizeComment(gestureState)) {
+                props.onShowModal();
             }
             return true;
         }
