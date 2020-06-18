@@ -3,6 +3,8 @@ import { Text, View, StyleSheet,
     Picker, Switch, Button, Alert } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import * as Animatable from 'react-native-animatable';
+import * as Permissions from 'expo-permissions';
+import { Notifications } from 'expo';
 
 class Reservation extends Component {
 
@@ -20,6 +22,11 @@ class Reservation extends Component {
         title: 'Reserve Campsite'
     }
 
+    // handleReservation() {
+    //     console.log(JSON.stringify(this.state));
+    //     const message = 
+    // }
+
     /*handleReservation() {
         console.log(JSON.stringify(this.state));
         this.toggleModal();
@@ -32,6 +39,28 @@ class Reservation extends Component {
             date: ''
         });
     }
+
+    async obtainNotificationPermission() {  // calling the Async method: Permissions.getAsync asking for permissions to send local notifications. This method returns a promise and the 'await' keyword will wait for that promise to fulfill and return its result.
+        const permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS); //we'll then store that result in this variable, 'permission'.
+        if (permission.status !== 'granted') { //checks if the permission has been granted.
+            const permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notifications');
+            }
+            return permission;
+        }
+        return permission; //NOTE: whatever value that's returned from an Async function is returned wrapped in a promise that resolves from that value.
+    }
+
+    async presentLocalNotification(date) {  //date entered into the reservation form.
+        const permission = await this.obtainNotificationPermission(); //"Waits" for the promise of this method to be fulfilled.
+        if (permission.status === 'granted') {
+            Notifications.presentLocalNotificationAsync({
+                title: 'Your Campsite Reservation Search',
+                body: 'Search for ' + date + ' requested'
+            });
+        }
+    }          // This second method is called in the 'Make It So!', or search button, below.
 
     render() {
 
@@ -97,12 +126,18 @@ class Reservation extends Component {
                                 {
                                     text: 'Cancel',
                                     //onPress: () => console.log(?.name + 'Not Deleted'),
-                                    onPress: () => this.resetForm(),
+                                    onPress: () => {
+                                        console.log('Reservation Search Canceled');
+                                        this.resetForm();
+                                    },
                                     style: 'cancel'
                                 },
                                 {
                                     text: 'Make it So!',
-                                    onPress: () => this.resetForm()
+                                    onPress: () => {
+                                        this.presentLocalNotification(this.state.date);
+                                        this.resetForm();
+                                    }
                                     //onPress: () => this.propsOfNewEventHandler?(?.id)
                                 }
                             ],
