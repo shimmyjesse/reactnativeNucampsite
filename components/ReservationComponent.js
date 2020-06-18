@@ -22,6 +22,37 @@ class Reservation extends Component {
         title: 'Reserve Campsite'
     }
 
+    handleReservation() {
+        console.log(JSON.stringify(this.state));
+        const message = `Number of Campers: ${this.state.campers}
+                        \nHike-In?  ${this.state.hikeIn}
+                        '\nDate: ${this.state.date}`;
+        Alert.alert(
+            'Begin Search?',
+            message,
+            [
+                {
+                    text: 'Cancel',
+                    //onPress: () => console.log(?.name + 'Not Deleted'),
+                    onPress: () => {
+                        console.log('Reservation Search Canceled');
+                        this.resetForm();
+                    },
+                    style: 'cancel'
+                },
+                {
+                    text: 'Make it So!',
+                    onPress: () => {
+                        this.presentLocalNotification(this.state.date);
+                        this.resetForm();
+                    }
+                    //onPress: () => this.propsOfNewEventHandler?(?.id)
+                }
+            ],
+            { cancelable: false }
+        );
+    }
+
     // handleReservation() {
     //     console.log(JSON.stringify(this.state));
     //     const message = 
@@ -111,39 +142,13 @@ class Reservation extends Component {
                                 marginLeft: 36
                             }
                         }}
-                        onDateChange={date => {this.setState({date: date})}}
+                        onDateChange={date => {this.setState({ date: date })}}
                     />
                 </View>
                 <View style={styles.formRow}>
                     <Button
-                        onPress={ () => {
-                            Alert.alert(
-                                'Begin Search?',
-                                `Number of Campers: ${this.state.campers}
-                                Hike-In?  ${this.state.hikeIn}
-                                Date: ${this.state.date}`,
-                            [
-                                {
-                                    text: 'Cancel',
-                                    //onPress: () => console.log(?.name + 'Not Deleted'),
-                                    onPress: () => {
-                                        console.log('Reservation Search Canceled');
-                                        this.resetForm();
-                                    },
-                                    style: 'cancel'
-                                },
-                                {
-                                    text: 'Make it So!',
-                                    onPress: () => {
-                                        this.presentLocalNotification(this.state.date);
-                                        this.resetForm();
-                                    }
-                                    //onPress: () => this.propsOfNewEventHandler?(?.id)
-                                }
-                            ],
-                            { cancelable: false }
-                            )
-                        }}
+                        onPress={() => this.handleReservation()}
+                            
                         title='Search'
                         color='#5637DD'
                         accessibilityLabel='Tap me to search for available campsites to reserve'
