@@ -26,7 +26,7 @@ class Reservation extends Component {
         console.log(JSON.stringify(this.state));
         const message = `Number of Campers: ${this.state.campers}
                         \nHike-In?  ${this.state.hikeIn}
-                        '\nDate: ${this.state.date}`;
+                        \nDate: ${this.state.date}`;
         Alert.alert(
             'Begin Search?',
             message,
@@ -148,7 +148,6 @@ class Reservation extends Component {
                 <View style={styles.formRow}>
                     <Button
                         onPress={() => this.handleReservation()}
-                            
                         title='Search'
                         color='#5637DD'
                         accessibilityLabel='Tap me to search for available campsites to reserve'
