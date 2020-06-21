@@ -320,16 +320,26 @@ class Main extends Component {
         this.props.fetchPromotions();
         this.props.fetchPartners();
 
-        NetInfo.fetch().then(connectionInfo => {    //returns a Promise that resolves to a 'NetInfoState object. Access to 'type' property.
-            (Platform.OS === 'ios') ?
-                Alert.alert('Initial Network Connectivity Type:', connectionInfo.type)
-                : ToastAndroid.show('Initial Network Connectivity Type: ' + connectionInfo.type, ToastAndroid.LONG);//Toast: Brief message appearing overlaid atop of current view then fades away in a few seconds.
-                                                                                                //ToastAndroid.LONG is 3.5 seconds. SHORT is 2 seconds.
-        });
+        this.showNetInfo();
+
+        // NetInfo.fetch().then(connectionInfo => {    //returns a Promise that resolves to a 'NetInfoState object. Access to 'type' property.
+        //     (Platform.OS === 'ios') ?
+        //         Alert.alert('Initial Network Connectivity Type:', connectionInfo.type)
+        //         : ToastAndroid.show('Initial Network Connectivity Type: ' + connectionInfo.type, ToastAndroid.LONG);//Toast: Brief message appearing overlaid atop of current view then fades away in a few seconds.
+        //                                                                                         //ToastAndroid.LONG is 3.5 seconds. SHORT is 2 seconds.
+        // });
 
         this.unsubscribeNetInfo = NetInfo.addEventListener(connectionInfo => {    //'addEventListener()' Takes a callback function in its parameter list.
             this.handleConnectivityChange(connectionInfo);
         });
+        
+    }
+
+    showNetInfo = async () => {                            //converted to use async/await to handle the promise returned from the operation.
+        const connectionInfo = await NetInfo.fetch()
+           (Platform.OS === 'ios') ?
+           Alert.alert('Initial Network Connectivity Type:', connectionInfo.type)
+           : ToastAndroid.show('Initial Network Connectivity Type: ' + connectionInfo.type, ToastAndroid.LONG);
     }
 
     componentWillUnmount() {
